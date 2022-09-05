@@ -16,3 +16,18 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/home', function () {
+    return view('home');
+});
+
+Route::get('/about', function () {
+    return view('about',  [
+        "name" => "Adi Muhamad Firmansyah",
+        "age" => "21"
+    ]);
+});
+
+Route::get('/blog', function () {
+    return view('blog');
+});

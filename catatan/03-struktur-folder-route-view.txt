@@ -1,0 +1,20 @@
+Route ada di folder route.
+Untuk mengatur setiap route aplikasi,
+itu semuanya di atur di route/web.php
+
+Di sana kita bisa menentukan :
+  Http methodnya apa
+  Routenya kemana
+  Ada data yang dikirim gak?
+  Halaman yang mau dimunculin halaman mana?
+
+Untuk mengatur tampilan halaman alias view, kita mengaturnya di
+resources/views
+
+Disana semua halaman frontend kita disimpan.
+
+Untuk menyimpan asset web, seperti css, js dan image
+itu semua di atur di folder public. 
+Di halaman views yang dibuat bisa langsung dipanggil
+menggunakan nama file asset secara langsung karena halaman public
+sudah relatif dengan halaman yang ada di folder views.
