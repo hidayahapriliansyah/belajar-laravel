@@ -1,0 +1,70 @@
+Instal laravel via Composer
+
+Syarat : PHP dan Composer sudah diinstal.
+
+Masuk ke folder yang disiapkan untuk menampung projek
+Laravel. Ketikkan di command line (git/cmd/shell) :
+composer create-project laravel/laravel:^8.0 example-app
+
+Tunggu sampai application key set successfully.
+
+====
+
+Masuk ke folder project lalu
+Jalankan PHP Development Server  dengan perintah
+php artisan Server
+
+==========
+
+The Laravel Installer
+
+Biar kalau mau nginstall Laravel, kita ngambil dari
+installer yang sudah diinstal sebelumnya. Bukan ngambil
+dari composer terus dowload manual. Biar cepet sayy ...
+
+Caranya :
+Download installer
+  composer global require laravel/installer
+  setting path
+    Tambah path baru di Environment variavle
+    %USERPROFILE%\AppData\Roaming\Composer\vendor\bin
+    restart gitbash nya.
+
+Untuk membuat project baru bisa ditulis
+  laravel new example-app
+
+  cd example-app
+ 
+  php artisan serve
+
+=====
+
+Valet
+
+Biar gak pake alamat localhost 127 bla bla bla ..
+Jadi kita bisa kayak pake domain gituuu
+
+Valet itu sebenarnya fitur Laravel untuk MAC.
+Tapi untungnya ada orang yang bikinin versi Windowsnya.
+Untuk men download valet installer tersebut bisa kunjungi
+https://packagist.org/packages/cretueusebiu/valet-windows
+Ikuti perintah di dokumentasinya.
+Untuk mendowload bisa diketik perintah
+composer global require cretueusebiu/valet-windows
+Setelah downloader selesai terinstall.
+Bisa cek dulu dengan menuliskan command valet.
+Nanti akan muncul valet nya versi berapa.
+Nah untuk menginstall installer valet tersebut Ketikkan
+valet install.
+
+Nah, sesuai dengan dokumenstasinya untuk Windows 10 harus ada
+beberapa konfigurasi manual agar bisa mengakses valet yaitu
+dengan membuat DNS server ip 4 dan 6 menuju ke IP Localhost.
+Tahu lah cara nyetting tersebut lah ya...
+Ipv4 local 127.0.0.1
+Ipv6 local ::1
+
+Lalu untuk membuat projek kita bisa diakses kayak DNS.
+Coba masuk ke direktori yang menyimpan aplikasi kita.
+Lalu tulis valet park.
+Nah nanti setiap folder yang ada didirektori tersebut bisa dipanggil layaknya dns tinggal ditambahin .test
