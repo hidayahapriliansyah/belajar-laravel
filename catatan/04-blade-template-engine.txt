@@ -1,0 +1,34 @@
+biar cepet pake extention 
+laravel blade spacer
+
+yang keren dari Blade ini adalah
+fitur ini otomatis memiliki htmlspecialchar buat ngefilter datanya
+biar gak jalan kalau bentuk html
+
+Oh iya. Terus kan sebenarnya kalau tulisan blade itu
+yang {{  }} seharusnya gak jalan kan mau itu di php nya atau dihtmlnya ..
+nah sebenarnya ada program yang ngejalanin ini.
+Hasil asli nya bisa di lihat di  
+folder storage/view
+
+===============
+
+Blade itu bisa ngejalanin code php juga kayak :
+  @foreach
+  @endforeach
+
+  @dd untuk dump and die, kayak var_dump gitu lah.
+
+  terus didalam bracket {{  }} nya juga bisa nyelipin kode php juga.
+
+===============
+
+Di dalam Route kita bisa ngirim data.
+Terus di baigan routenya kita bisa ngasih kayak nilai get gitu.
+Misal /post/post-pertama
+nah si post-pertama nya itu bisa dijadikan nilai.
+Kalau di contoh mah jadi kayak /post/{slug},
+terus nanti si {slug} bisa dipakai sebagai parameter di function
+jadi fn($slug).
+
+di sini dokumentasinya https://laravel.com/docs/8.x/urls#urls-for-named-routes
