@@ -1,0 +1,114 @@
+Untuk mengatur koneksi aplikasi laravel ke database yang dimiliki
+kita akan mengaturnya di file .env
+
+Konfigurasi database di laravel diatur di file database.php di folder config.
+
+========================
+
+Migrate
+
+Migrate adalah skema database yang akan dibuat di database.
+Kerennya di migrate ini kita seolah olah main mysql lewat phpmyadmin/workbench tapi dengan gaya laravel.
+Kita bisa ngatur jenis kolom, sifat kolom, dll.
+Jadi kita bisa tetap fokus ngatur database tanpa harus pergi ke UI/pakai command database itu.
+Keren sih.
+Coba akses dokumentasinya di migrate, type data
+
+File migrate terdapat di folder database/migrations.
+
+Dalam setiap file migrate terdapat method
+  -up
+    untuk menjalankan migrate yaitu menerapkan konfigurasi file migrate ke database
+    yaitu menggunakan command
+      php artisan migrate
+
+  -down
+    untuk menarik, membatalkan migrate yang sudah ada di database
+      php artisan migrate:rollback 
+
+  Untuk menjalankan refresh migrate yaitu rollback dan migrate secara bersamaan
+  gunakan command :
+    php artisan migrate:fresh
+
+=================
+
+ORM Objet relational mapper
+
+Intina seperti yang udah diliat difile migrations kita ngebikin 
+si database mysqlna bisa dikelola ku gaya laravel.
+Nah gaya laravelna kumaha?
+Bisa di lihaat di bagian class yang up ada instance $table.
+Nah, dimana setiap kolom dari database dibuat versi instance tablenya.
+Setiap instance ini terhubung dengan database dimana kita bisa
+mengisikan langsung data ke db melalui laravel tanpa menyentuh database managementnya (phpmyadmin/workbench etc.)
+Ini di sebut active record pattern.
+
+======
+
+Antara Migrations dan Model, lope lope
+
+Ok, pada saat membuat migrate maka file migratenya akan ada di folder migrations.
+Seperti yang udah kita ketahui bahwa migrate ini ngatur skema database.
+Nah, lalu jika skema database sudah dibuat maka siapa yang akan 
+membuat aturan alur keluar masuk data dari/ke data base?
+yap, Model. 
+
+Bisa dibilang kayak gini. Migrate itu wadahnya, model itu aturan hal apa aja yang bakal dimasukin ke wadah itu.
+Ih, gimana si maksudnya?
+
+=======
+
+Tinker
+
+php artisan tinker
+
+merupakan ... saya bisa nyebut ini sebagai text editor untuk
+interaksi model laravel dengan database.
+
+Kita bikin dulu variable instance dari class model,
+lalu kita bisa deh ngisi apa aja ke databasenya.
+
+Nah, pada saat pembuatan instance itu kan kita harus
+pakai namespace buat ngedapetin class modelnya, jadi panjang kan. contoh :
+
+    $user = new App\Models\User;
+
+Nah, di Tinker kita bisa nge aliasin si deklarasi pembuatan instance itu.
+Setelah instance dibuat dengan memanggil name space. Lakukan pembuatna instance dengan 
+lansung deklarasi nama class.
+
+    $user = new App\Models\User;
+    $user = new User;
+
+nanti akan muncul keterangan aliasing kitu dari tinkernya.
+
+Untuk menambahkan data ke $user, karena itu udah merupakan instance dari model User,
+maka kita tinggal panggil arrow nya aja ke properti User.
+Ingat juga! terdapat status seperti fillable, dll. di class User yang digunakan
+sebagai filter apakah sebuah kolum bisa diisi atau tidak.
+
+    $user->name = "adi";
+    $user->email = "adi@email.com";
+    $user->password = bcrypt('123');
+
+Intinya ini nulisin kode PHP tapi ngerjainnya di TInker yang bisa masuk ke database.
+Nah, buat nyimpen objek $user yang udah diisi name, email, ama passwordnya
+kita tinggal panggil method save.
+
+    $user->save()
+
+Objek pun akan tersimpan dan data properti dari objek $user akan masuk ke db.
+
+Nah, setelah dimasukkan itu. Kita juga bisa ngeliat isinya kayak pas kita bikin
+method di model. Udah banyak method yang ada di objek $user yang ada di tinker itu.
+
+    $user->all()
+    Bakal nunjukin semua isi table user.
+
+    $user->find(2)
+    bakal nunjukin isi table dengan id 2.
+    tapi kalau gak ada yang id 2 nya, bakal munculin data null.
+
+    $user->findOrFail(22)
+    bakal nunjukin isi table dengan id 2,
+    tapi kalau error bakal nunjukin errornya.
