@@ -1,0 +1,29 @@
+Model 
+
+Folder model terdapat di App/Model
+
+Model itu bisa disebut data dari database. Kitu heula we.
+Cara membuat model lebih simple dengan menggunakan artisan.
+
+tulis
+  php artisan make:model 
+
+Untuk menulis artisan di valet vscode gunakan extention laravel artisan
+
+PHP Namespace Resolver
+
+=====
+
+Di sini kita belajar Collection
+
+Collection itu ngebikin si array kayak array di Javascript.
+Keren dah pokokna mah. Jadi nanti filter arrayna bisa lewat method method siga js.
+
+=========
+
+Controller
+
+Ini konsep MVC. Dimana dari pada kita ngatur tampilan dengan
+closure di Route. Mending si function closure itu dikelola di Collection.
+
+Dari mana data diambil. Mau nampilin apa. Mau nampilinnya kayak gimana, dimana...

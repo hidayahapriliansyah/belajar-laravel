@@ -12,7 +12,7 @@ Tunggu sampai application key set successfully.
 
 Masuk ke folder project lalu
 Jalankan PHP Development Server  dengan perintah
-php artisan Server
+php artisan Serve
 
 ==========
 

@@ -1,0 +1,5 @@
+Daftar extention untuk mempermudah bekerja dengan laravel
+  -PHP intelephense : untuk auto complete php 
+  -PHP Namespace Resolver : membuat namespace otomatis
+  -Laravel Artisan : untuk menjalankan artisan di valet VSCode
+  -Laravel Blade Spacer : Membuat blade bracket snippet
