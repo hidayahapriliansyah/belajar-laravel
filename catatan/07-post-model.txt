@@ -1,0 +1,98 @@
+php artisan make:model -m
+    -m disini artinya langsung membuat migrate dari model
+
+excerpt adalah higligh dari isi konten (body)
+
+================
+
+BISA PAKE NOTASI ARRAY DAN OBJEK
+
+Seperti yang kita tahu dalam mengakse data dengan blade,
+kita menggunakan notasi array sebelumnya seperti : 
+
+    {{ $post["id"] }}
+
+Nah, selain dengan notasi array, karena bentuk data sudah
+menjadi collection yang dibuat oleh parent Model, maka data 
+bisa diakses menggunakan notasi objek.
+
+    {{ $post->id }}
+
+Penggunaan notasi objek merupakan best practice yang direkomendasikan.
+
+==========
+
+MENGHINDARI HTMLSPECIALCHAR
+
+Pada saat penggunaan blade {{ $post->body }} laravel
+otomatis menggunakan memfilter data body dengan htmlspecial char.
+Untuk beberapa keperluan kita ingin tag html yang ada di data
+tersebut berjalan sebagaimana mestinya maka untuk menghidari itu gunakan
+tag blade {!!  !!}
+
+    {!! $post->body !!}
+
+===============
+
+Mass Assignemnt di Tinker
+
+Mengisi table dengan banyak input sekaligus dengan
+    Post::create([ ... ]);
+
+Pada saat menjalankan mass assignment, kita harus menentukan
+mana table yang harus diisi dengan mengaturnya di model dengan
+memasukkan table ke properti fillable, atau guarded.
+Fillable artinya kolom yang boleh diisi.
+Guarded berarti kolom tidak boleh diisi.
+Contoh :
+    Pada class model dibuat properti
+
+        protected $fillable = ['title', 'excerpt', 'body'];
+
+INGAT! KALO BUAT PERUBAHAN DI MODELNYA HARUS RESET TINKERNYA ADI!
+
+=============
+
+Cara Update di Tinker
+
+Post::find(3)->update(['title'] => 'Judul Ketiga Berubah');
+
+========
+
+ROUTE MODEL BINDING
+
+IEU LUMAYAN RIEUT!!!
+
+Contoh :
+Kita mengatur route di web.php /post/{slug},
+slug itu kan merupakan slug dari data post ya,
+Kerennya si route jadi bisa ngirimin MODEL nya gitu,
+bukan cuma sekedar slug, tapi Post secara keseluruhan.
+
+    use App\Models\User;
+    
+    Route::get('/blod/{post}', function (post $post) {
+        return $post->email;
+    });
+
+Inget, nama parameternya di route sama di controller/closure harus sama.
+
+Nah, karena di route itu masih bentuk model yang dikirimkan,
+maka untuk menunjuk isi data yang spesifik dari model tersebut seperti
+id, slug, title,
+maka bisa ditambahkan nama data pada model tersebut menjadi :
+
+    Disini kita akan nyari berdasarkan slug dari Post
+    Route::get('/blod/{post:slug}', function (post $post) {
+        return $post->email;
+    });
+
+
+
+
+
+
+
+
+
+
