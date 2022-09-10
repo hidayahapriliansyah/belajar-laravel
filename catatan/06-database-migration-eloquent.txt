@@ -112,3 +112,4 @@ method di model. Udah banyak method yang ada di objek $user yang ada di tinker i
     $user->findOrFail(22)
     bakal nunjukin isi table dengan id 2,
     tapi kalau error bakal nunjukin errornya.
+

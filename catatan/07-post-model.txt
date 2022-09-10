@@ -71,7 +71,7 @@ bukan cuma sekedar slug, tapi Post secara keseluruhan.
 
     use App\Models\User;
     
-    Route::get('/blod/{post}', function (post $post) {
+    Route::get('/blog/{post}', function (post $post) {
         return $post->email;
     });
 

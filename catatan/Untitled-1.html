@@ -28,8 +28,60 @@ Post::create([
 ]);
 
 Post::create([
-'title' => 'Judul Post Tiga',
-'slug' => 'judul-post-tiga',
-'excerpt' => 'excerpt tiga',
+'category_id'=> 3,
+'title' => 'Judul Post Ketiga;',
+'slug' => 'judul-post-ketiga',
+'excerpt' => 'excerpt ketiga',
 'body' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit minus veniam a repudiandae impedit excepturi maxime aperiam consectetur expedita minima laboriosam dolorum enim laudantium tempora obcaecati, temporibus voluptatum magni? Quae.'
+])
+
+Komentar video Laravel WPU :
+Komentar ini merupakan catatan pribadi saya, takut lupa lagi hehe.
+Kebetulan saya belajar php full mengikuti wpu dari dasar, oop, sampai mvcnya.
+Di video ini ada yang bikin aku bingung banget pada penulisan function yang parameternya mengandung class. Yaitu function (Post $post).
+Saya bener bener gak paham awalnya dengan cara penulisan parameter dibarengi class, tapi setelah saya cari ternyata pemahaman dasar saya kurang. Penulisan itu ada kaitannya dengan Polymorphism. Sebelum memahami polymorphism, harus paham dulu bagaimana aturan variable di php dituliskan.
+
+Salah satu cara penulisan varible di php adalah dideklarasikan bersama type datanya. Contoh :
+
+    string $nama = "Adi";
+    int $nomor = 10;
+
+Mau nulis variable tanpa type data juga boleh :
+
+    $nama = "Adi";
+    $nomor = 10;
+
+Nah, seperti yang diketahui bahwa type itu banyak ada string, int, boolean, dll.
+Ternyata di php class juga bisa dijadikan type data. Kita masuk ke yang tadi
+
+    Post $post;
+    Dimana variable ini jadi parameter function
+
+    funtion (Post $post)
+
+Polymorphism artinya apa? Artinya variable bisa menggunakan bentuk data dari kelas Post bahkan class class yang menjadi turunannya.
+Kita fokus ke contoh dimana route mengirimkan data {post}.
+
+    Route::get('/blog/{post}', function (Post $post) {
+      return $post;
+    });
+
+Nah, kalau sekedar {post} doang berarti si route ngirimin data postnya itu kita sebut aja bertipe data objek dimana objeknya itu Post beserta seluruh isi propertinya  (id, title, slug) dan methodnya. si function pun udah siap siap nangkep data tersebut dimana disana telah disiapkan parameter $post yang bertipe data Post. Yang dikirim route instance class Post, yang nerima type datanya Post. Cocok dong. Karena yang dikirim itu semua data dari post, maka parameter pun nerima semua data beserta properti dan methodnya yang mana mengandung id, slug, title dll.
+
+Nah, kita kan cuma perlu slugnya doang. Laravel melakukan itu cukup dengan menulisakn properti slug setelah penulisan post menjadi :
+
+    Route::get('/blog/{post:slug}', function (Post $post) {
+      return $post;
+    });
+
+Yang dikiring sekarang udah berupa
+
+Category::create([
+'name' => 'Programming',
+'slug' => 'programming'
+])
+
+$category->create([
+'name' => 'Personal',
+'slug' => 'personal'
 ])

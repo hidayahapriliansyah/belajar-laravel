@@ -11,8 +11,9 @@ Tunggu sampai application key set successfully.
 ====
 
 Masuk ke folder project lalu
-Jalankan PHP Development Server  dengan perintah
-php artisan Serve
+Jalankan PHP Development Server  dengan perintah :
+
+  php artisan Serve
 
 ==========
 
@@ -26,7 +27,7 @@ Caranya :
 Download installer
   composer global require laravel/installer
   setting path
-    Tambah path baru di Environment variavle
+    Tambah path baru di Environment variable
     %USERPROFILE%\AppData\Roaming\Composer\vendor\bin
     restart gitbash nya.
 
@@ -49,6 +50,7 @@ Tapi untungnya ada orang yang bikinin versi Windowsnya.
 Untuk men download valet installer tersebut bisa kunjungi
 https://packagist.org/packages/cretueusebiu/valet-windows
 Ikuti perintah di dokumentasinya.
+
 Untuk mendowload bisa diketik perintah
 composer global require cretueusebiu/valet-windows
 Setelah downloader selesai terinstall.

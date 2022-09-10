@@ -1,0 +1,55 @@
+Oh ini maksud dari kalau model itu singularnya, migration itu jamaknya.
+
+Kalau di model penulisannya Category, pas dibikin migrationnya otomatis namanya jadi categories.
+
+Tapi kenapa jadi gitu ya?
+
+=============
+
+PROBLEM LAGI DI TINKER NIH
+
+Kalau pas di TInker ada keterangan class not found.
+Coba panggil class nya pake namespace ADI!
+
+Lah kunaon pas manggil kategory ku Category::create() gagal waenya?
+Padahal pas manggil ku namespace bener. Dina jero filena aya class Category na ongkoh.
+Kumaha ceunah yeuh?
+
+=======
+
+ELOQUENT ORM
+
+Hati hati! INI MENGHUBUNGKAN FOREIGN KEY!
+Fokus! Tuhkan salah lagi harusnya foreignkeyId malah string. 
+ADI ADI!
+
+Sebelumnya harus paham dulu relation di MySQl yaa ...
+Ini ada hubungannya sama foreignkey ama join.
+
+Udah paham? Oke lanjut ...
+
+Relasi di Laravel dibahasakan dengan HasMany : untuk relasi one to many.
+dan belongsTo untuk one to one. 
+
+Cara bikin relational orm adalah dengan menambahkan foreignkey di migration desain skema
+untuk table yang akan dihubungkan. Contohnya Post mau punya Category kan. 
+Di Migration post harus mempunyai foreignkey table category, kita akan mengambil id sebagai fk nya.
+
+    Di migration post
+    $table->foreignkeyId('category_id');
+
+    cara nulisnya foreignkeyId('namatable_id')
+
+Nah terus di Model Post kita bikin deh method untuk mendapatkan Category yaitu
+
+    public function category()
+    {
+      return $this->belongsTo(Category::class);
+    }
+
+Cara ceknya tinggal coba di Tinker
+
+    $post = Post::first()  // mengambil post yang pertama
+    $post->category
+
+    Nah disini kena kena category method ulah make () nya, ADI!

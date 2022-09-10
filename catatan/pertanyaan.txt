@@ -1,3 +1,4 @@
 Pertanyaan :
 
 Apa itu what you see what you get?
+Kenapa pas nulis di model Category, pas di migration jadi categories?

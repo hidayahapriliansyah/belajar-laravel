@@ -19,7 +19,7 @@ class PostController extends Controller
     {
         return view('post', [
             "title" => $post["title"],
-            "post" => $post
+            "post" => $post,
         ]);
     }
 }
