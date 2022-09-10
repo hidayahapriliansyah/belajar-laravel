@@ -1,0 +1,20 @@
+Dokumentasi : https://laravel.com/docs/8.x/seeding#writing-seeders
+
+Cara membuat seeder 
+
+php artisan make:seeder UserSeeder
+
+cara menjalankan seeder 
+
+php artisan db:seed
+ 
+php artisan db:seed --class=UserSeeder
+php artisan migrate:fresh --seed
+
+
+================
+
+yes lancar jaya
+
+belongsTo : Model dimiliki oleh satu ...
+hasMany : Model memiliki banyak ...

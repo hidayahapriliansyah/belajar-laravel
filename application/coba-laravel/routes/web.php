@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\PostController;
-use App\Models\Category;
 use App\Models\Post;
+use App\Models\User;
+use App\Models\Category;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,5 +53,20 @@ Route::get('/categories', function() {
     return view('categories', [
         "title" => "Categories",
         "categories" => Category::all()
+    ]);
+});
+
+Route::get('/author', function() {
+    return view('authors', [
+        "title" => "Author",
+        "authors" => User::all()
+    ]);
+});
+
+Route::get('/author/{user:id}', function(User $user) {
+    return view('author', [
+        "title" => "Author",
+        "author" => $user,
+        "posts" => $user->posts
     ]);
 });
