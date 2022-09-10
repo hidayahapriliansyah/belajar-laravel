@@ -53,3 +53,11 @@ Cara ceknya tinggal coba di Tinker
     $post->category
 
     Nah disini kena kena category method ulah make () nya, ADI!
+
+
+=============
+
+Ingat bentuk data yang dikembalikan!
+
+manggil $category->post->title gak ada karena post itu collection
+
