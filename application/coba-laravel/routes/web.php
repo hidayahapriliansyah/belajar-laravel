@@ -56,6 +56,8 @@ Route::get('/categories', function() {
     ]);
 });
 
+// author route
+
 Route::get('/author', function() {
     return view('authors', [
         "title" => "Author",
@@ -63,10 +65,10 @@ Route::get('/author', function() {
     ]);
 });
 
-Route::get('/author/{user:id}', function(User $user) {
+Route::get('/author/{author:username}', function(User $author) {
     return view('author', [
         "title" => "Author",
-        "author" => $user,
-        "posts" => $user->posts
+        "author" => $author,
+        "posts" => $author->posts
     ]);
 });

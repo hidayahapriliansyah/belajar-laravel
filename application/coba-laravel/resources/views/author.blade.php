@@ -8,9 +8,10 @@
     @foreach ($posts as $post)
       <article class="mb-5">
         <h2><a href="/blog/{{ $post->slug }}">{{ $post->title }}</a></h2>
-        <p>By <a href="">{{ $post->user->name }}</a> in {{ $post->category->name }}</p>
+        <p>By <a href="">{{ $post->author->name }}</a> in <a href="/category/{{ $post->category->slug }}">{{ $post->category->name }}</a></p>
         <p>{{ $post->excerpt }}</p>
       </article>
+      <hr>
     @endforeach
 
   </div>
