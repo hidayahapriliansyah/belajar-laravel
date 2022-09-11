@@ -1,0 +1,29 @@
+Factory itu kayak pavrik pembuat data.
+
+Di folder database terdapat folder userfactory yang isinya berupa class turunan dari class Factory.
+
+=================
+
+Faker
+
+Dokumentasi : https://fakerphp.github.io/
+
+Untuk merubah localization kita bisa mengaturnya di 
+
+============
+
+Cara membuat Factory
+
+    php artisan make:factory NamaFactory
+
+
+========
+
+Mengubah Foreign Key Target
+
+Kita ingin mengambil user tapi konteksny author, maka di Model Post,
+relation user yang akan diganti menjadi author harus diberi alias.
+
+    public function author {
+        $this->belongsTo(User::class, 'user_id');
+    }
