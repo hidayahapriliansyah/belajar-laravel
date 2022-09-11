@@ -1,0 +1,54 @@
+PERHATIKAN!
+
+Kita melakukan looping di halaman pos untuk mengurai collection $post.
+Itu ok ok aja. Cuma yang jadi masalah adalah saat kita melakukan query relation
+ke author dan category dimana itu terjadi di dalam looping. 1 kali looping, query author dan category,
+looping lagi query author dan category lagi ... terus ... Ini bahaya! Dimana seharusnya kita cukup melakukan
+3 kali query yaitu post, author, dan category, malah terjadi query di dalam looping.
+
+==================
+
+Cara memantau N+1 Problem 
+
+pake clockwork. Dokumentasi : https://github.com/itsgoingd/clockwork
+
+install via composer : $ composer require itsgoingd/clockwork
+
+Lalu instal extention clockwork. Setelah diinstal masuk ke inspect, pilhclock work.
+
+
+==========
+
+Solusi
+
+Eager Loading
+Cara ini digunakan ketika kita mendapatkan data langusng dari parent model (seperti mengambil data langsung dari Post)
+Nah, sebenarnya yang kita lakukan pada query dan looping post itu dinamakan
+lazy loaded. Untuk menghindari masalah N+1 problem kita akan lakukan eager loded.
+Gimana caranya? yaitu dengan menyertakan relation yang akan digunakan pada query utama yaitu post
+menggunakan method with([nama_realtion])
+
+    "posts" => Post::with(['author', 'category])->latest()->get();
+
+    Atau dengan cara menyimpan with di model Post :
+
+    buat properti baru 
+    protected $with = ['author', 'category'];
+
+Lazy Eager Loading
+Cara ini kita gunakan setelah data didapatkan dari Parent model, biasanya setelah dilakukan query tertentu.
+Contohnya adalah pada kasus route autho/username dimana kita akan melakukan query dulu ke author yang mana adalah
+user berdasarkan username. setelah data itu kita dapatkan baru kita lakukana lazy eager loading pada query turunanannya (relation).
+Caraya menggunakan method load([nama_relation]).
+
+    Route::get('/author/{author:username}', function(User $author) {
+        return view('author', [
+            "title" => "Author",
+            "author" => $author,
+            "posts" => $author->posts->load(['author', 'category'])
+        ]);
+    });
+
+==========
+
+

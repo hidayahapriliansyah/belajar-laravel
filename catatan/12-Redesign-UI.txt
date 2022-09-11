@@ -1,0 +1,33 @@
+pMembuat waktu mudah dibaca
+
+Setelah menggunakan property created_at panggil method diffForHuman().
+
+    $post->created_at->diffForHumans();
+
+Ini adalah library Carbon yang sudah termasuk di dalam Laravel
+
+=====================
+
+SKIP ARRAY
+
+Untuk skip 1 post karena sudah digunakan di card hero. maka saat foreach
+skip 1 array.
+
+foreach ($post->skip(1) as $post) {
+  ...
+}
+
+==========
+
+Membuat tag p ke paragraf
+
+faker->paragraphs akan mengembalikan array. Jadi si arraynya bisa kita modifikasi tuh.
+
+ada 2 cara :
+1. Menggunakan function implode menjadi
+
+    $body => '<p>' . implode('</p><p>', $this->faker->paragraphs(mt_rand(2,5)) . '</p>';
+
+2. Menggunakan mapping collection
+
+    $body => collect(paragraphs(mt_rand(2,5))->map(fn($p) => "<p>$p</p>")->implode('');

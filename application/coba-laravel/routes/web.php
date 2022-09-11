@@ -23,13 +23,15 @@ Route::get('/', function () {
 
 Route::get('/home', function () {
     return view('home', [
-        "title" => "Home"
+        "title" => "Home",
+        "active" => "home",
     ]);
 });
 
 Route::get('/about', function() {
     return view('about',  [
         "title" => "About",
+        "active" => "about",
         "name" => "Adi Muhamad Firmansyah",
         "email" => "adi@gmail.com",
         "image" => "adi.jpg"
@@ -41,34 +43,38 @@ Route::get('/blog', [PostController::class, 'index']);
 // Route untuk single post
 Route::get('/blog/{post:slug}', [PostController::class, 'show']);
 
-Route::get('/category/{category:slug}', function (Category $category) {
-    return view('category', [
-        "title" => "Category : $category->name",
-        "category" => $category->name,
-        "posts" => $category->post
-    ]);
-});
-
 Route::get('/categories', function() {
     return view('categories', [
         "title" => "Categories",
+        "active" => "categories",
         "categories" => Category::all()
     ]);
 });
+
+Route::get('/categories/{category:slug}', function (Category $category) {
+    return view('posts', [
+        "title" => "Post by Category : $category->name",
+        "active" => "categories",
+        "posts" => $category->post->load(['author', 'category'])
+    ]);
+});
+
 
 // author route
 
 Route::get('/author', function() {
     return view('authors', [
         "title" => "Author",
+        "active" => "blog",
         "authors" => User::all()
     ]);
 });
 
 Route::get('/author/{author:username}', function(User $author) {
-    return view('author', [
-        "title" => "Author",
+    return view('posts', [
+        "title" => "Post : $author->name",
+        "active" => "blog",
         "author" => $author,
-        "posts" => $author->posts
+        "posts" => $author->posts->load(['author', 'category'])
     ]);
 });
