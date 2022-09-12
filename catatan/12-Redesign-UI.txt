@@ -1,3 +1,11 @@
+Mengetahui jumlah collection
+
+gunakan method count()
+
+    $posts->count()
+
+==========================
+
 pMembuat waktu mudah dibaca
 
 Setelah menggunakan property created_at panggil method diffForHuman().
