@@ -1,0 +1,64 @@
+CSRF PROTECTION 
+
+https://laravel.com/docs/8.x/csrf#main-content
+
+cros-site request forgery
+
+Laravel berusaha mengamankan form website kita dengan meregenerasi token.
+Bisa dibaca deh di dokumentasinya.
+
+View form kita juga wajib menjalankannya dengan menambahkan 
+tag blad @csrf di dalam form.
+
+
+=====================
+
+VALIDATION
+
+Dokumentasi : https://laravel.com/docs/8.x/validation#introduction
+validation rules : https://laravel.com/docs/8.x/validation#available-validation-rules
+
+Untuk menggunakannnya panggil method validate di dari request
+
+    $request->validate([
+      'nama_field' => 'aturan' // untuk aturan semuanya tercantum di dokumentasi.
+    ]);
+
+    Penulisan rule bisa menggunakan '|' atau array.
+
+Untuk menampilkan error dari validate di view.
+Maka gunakan tag blade @error('nama_field') ... @enderror.
+Kita bisa memasukkan class atau element error ke dalam tag error tersebut.
+
+MENAMPILKAN PESAN ERROR VALIDATION
+
+Dokumentasi : https://laravel.com/docs/8.x/validation#quick-displaying-the-validation-errors
+
+MENAMPILKAN VALUE LAMA
+
+Tinggal pake {{ old('nama_field') }}. aduh ini terllau mudah
+
+Sesudah data tervalidasi kita bisa memasukkannya ke database.
+
+INPUT data
+
+$validatedData = $request->validate([
+      'name' => 'required|max:25|min:3',
+      'username' => ['required', 'min:3', 'max:12', 'unique:users'],
+      'email' => 'required|email|unique:users',
+      'password' => 'required|min:6|max:255'
+    ]);
+
+    $validatedData['password'] = Hash::make($validatedData['password']);
+
+    User::create($validatedData);
+
+======================
+
+FLASH MESSAGE 
+
+    // cara flash pertama tanpa with
+    // $request->session()->flash('success', 'Registration success! Please login.');
+
+    // cara flash kedua dengan with
+    return redirect('/login')->with('success', 'Registration success! Please login.');

@@ -86,3 +86,5 @@ Route::get('/login', [LoginController::class, 'index']);
 
 // Register route
 Route::get('/register', [RegisterController::class, 'index']);
+
+Route::post('/register', [RegisterController::class, 'store']);
