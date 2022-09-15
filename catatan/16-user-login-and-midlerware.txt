@@ -1,0 +1,84 @@
+OTENTIKASI login
+
+Dokumentasi : https://laravel.com/docs/8.x/authentication#starter-kits
+
+Manually authenticate users : https://laravel.com/docs/8.x/authentication#remembering-users
+
+Buat method authenticate di LoginController
+
+    public function authenticate(Request $request)
+    {
+        //
+    }
+
+Di dalam method authenticate kita akan melakukan hal berikut :
+
+    // 1. Validasi
+    $credentials = $request->validate([
+        "email" => "required|email:dns",
+        "password" => "required"
+    ]);
+
+    // 2. Autentikasi dengan database
+    if(Auth::attempt($credentials)) {
+      //jika berhasil
+      //3. generate sesion
+        $request->session()->regenerate();
+      // 4. Redirect halaman
+        return redirect()->intended('/dashboard');
+    }
+
+    // Jika gagal maka kembali kan ke halaman asal dan bawa flash message login faild
+    return back()->with('loginError', 'Login failed!');
+
+============================
+
+MIDDLEWARE
+
+Dokumentasi : https://laravel.com/docs/9.x/middleware#registering-middleware
+
+Daftar nama middleware : app/Http/Kernel.php
+
+Penerapan middleware guest untuk route login :
+    Route::get('/login', [LoginController::class, 'index'])->middleware('guest');
+
+Mengubah route service provider ada di app/providers
+
+======================
+
+LOGOUT
+
+Kita akan menggunakan form untuk logout
+
+    <form action="/logout" method="post">
+        <button class="dropdown-item"><i class="bi bi-box-arrow-right"></i> Logout</button>
+    </form>
+
+Lalu di route /logout kita akan arahkan ke LoginController method logut()
+
+    public function logout(Request $request)
+    {
+      Auth::logout();
+
+      $request->session()->invalidate();
+
+      $request->session()->regenerateToken();
+
+      return redirect('/');
+    }
+
+    Dokumentasi : https://laravel.com/docs/9.x/authentication#invalidating-sessions-on-other-devices
+
+=========================
+
+Route [login] not defind
+
+Dokumentasi : https://laravel.com/docs/9.x/routing#named-routes
+
+Cek app\http\middleware\authenticate
+
+Intinya si auth itu ngarahin nya ke route yang dikasih nama login.
+sedangkan kita gak namain route login.
+Jadi kita harus kasih tahu nama route login kita dengan login seperti ini :
+
+    Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');
