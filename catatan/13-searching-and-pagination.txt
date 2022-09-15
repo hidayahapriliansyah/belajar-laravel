@@ -1,0 +1,194 @@
+ternyata biar bisa enter itu typenya submit heheh
+
+  type="submit"
+
+==================
+
+Menangkap data GET
+
+coba test di controller action="...", menuju ke post kan ya?
+cek 
+
+    dd(request('search'))
+    search adalah nama dari input
+
+=================
+
+Menambahkan logika query
+
+sebelumnya, pada return view kita mengirim $posts dengan data langsung dari Post::class (tanpa filter)
+Nah sekarang kita akan filer dulu.
+Caranya :
+    
+    ambil dulu semua postnya
+    $posts = Post::latest();
+
+    lalu kita filter menggunakan if dengan cek request
+    if(request('search'){
+        $posts = Post::where('title', 'like', '%' . request('search') . '%');
+    }
+
+================
+
+Menambahkan value input setelah search
+
+tambahkan di value input attribute
+
+    value="{{ request('search') }}"
+
+==================
+
+MULTIPLE query
+
+kita akan cari berdasarkan title dan body.
+Kita akan chaining filter posts dengan orWhere()
+menjadi :
+
+    if(request('search')) {
+            $posts->where('title', 'like', '%' . request('search') . '%')
+                    ->orWhere('body', 'like', '%' . request('search') . '%');
+        }
+
+
+=======================
+
+QUERY SCOPE
+
+Kita akan pakai local scope : https://laravel.com/docs/8.x/eloquent#query-scopes
+
+Sebetulnya kan kalau tugas filter data itu tugasnya model bukan controller.
+Jadi kita bakal bikin filternya di model.
+
+kita akan membuat method scopeFilter. Dimana kita akan membutuhkan parameter query.
+Querynya ngambil dari mana? querynya ngambil otomatis dari isi posts.
+Sebelumnya kan kita ngedeklarasiin $posts = Post::latest().
+Nah si query adalah si $posts itu.
+
+Emang si suka membingungkan kalau di deklarasi function ada parameter tapi pas
+manggil gak ada parameternya terus jalan suka bingung. Tapi, itulah cara kerjanya.
+
+    Di Model Post
+
+    public function scopeFilter($query)
+    {
+        if(request('search')) {
+            $query->where('title', 'like', '%' . request('search') . '%')
+                    ->orWhere('body', 'like', '%' . request('search') . '%');
+        }
+    }
+
+==========================
+
+MEMBUAT CONTROLLER MENANGANI REQUEST SEARCH
+
+Kita sudah membut scopeFilter dengan tujuan agar model menjalankan
+tugasnya sebagai filter data. Namun kita mengambil pekerjaan controller
+dengan mengecek langsung ada tidaknya request('search'). Oleh karena itu mari kita
+ubah lagi kodingannya.
+
+    Kita tambahkan parameter filter di method scopeFilter.
+    Tujuannya adalah untuk mengecek apakah controller mengirim filter atau tidak.
+
+        public function scopeFilter($query, array $filters)
+        {
+            if(isset($filters['search']) ? $filters['search'] : false) {
+                $query->where('title', 'like', '%' . $filters['search'] . '%')
+                        ->orWhere('body', 'like', '%' . $filters['search'] . '%');
+            }
+        }
+
+    Terus di controller kita akan masukkan argumen request('search')
+
+        public function index()
+        {
+            // dd(request('search'));
+
+            return view('posts', [
+                "title" => "Blog All Post",
+                "active" => "blog",
+                "posts" => Post::latest()->filter(request(['search']))->get()
+            ]);
+        }
+
+==========================
+
+MENGGUNAKAN METHOD WHEN DI COLLECTION
+
+Dokumentasi : https://laravel.com/docs/8.x/collections#method-when
+
+Sebelumnya kita menggunakan if untuk checking filter. Sekarang kita akan coba gunakan
+salah satu method collection yaitu when() yang fungsinya sama seperti if.
+
+Btw, disini kit amenggunakan coaleseing operator dimana ini adalah fitur dari PHP 7+.
+alih alih menggunakan ternary dalam pengecekan isset. maka php membuat syntax baru '??'.
+Doekumentasi : https://www.php.net/manual/en/migration70.new-features.php
+
+oh iya pas bikin ini pak Dhika bikin versi revisinya ya..
+
+        
+        // Tutorial yang salah dari Pak Sandhika
+        // $query->when($filters['search'] ?? false, function($query, $search) {
+        //     return $query->where('title', 'like', '%' . $search . '%')
+        //                     ->orWhere('body', 'like', '%' . $search . '%');
+        // });
+
+        // Perbaikan dari Pak Sandhika
+        $query->when($filters['search'] ?? false, function($query, $search) {
+            return $query->where(function($query) use ($search) {
+                $query->where('title', 'like', '%' . $search . '%')
+                            ->orWhere('body', 'like', '%' . $search . '%');
+            });
+        });
+
+=====================
+
+FILTER RELATIONSHIP
+
+Kita akan menggunakan filter request category pada model Post.
+Gunakan whereHas() untuk melakukannya. Tambahkan pada method scopeFilter().
+
+    $query->when($filters['category'] ?? false, function($query, $category) {
+            return $query->whereHas('category', function($query) use ($category) {
+                $query->where('slug', $category);
+            });
+        });
+
+pada method whereHas() terdapat parameter 'category' yang mana merupakan relation
+yang sudah dibuat di model Post berupa method category yang memiliki realtion belongsTo.
+Namanya harus sama kayak nama relationnya.
+
+
+==================
+
+MEMPERBAIKI AGAR CATEGORY MASUK KE FORM SEARCH
+
+arahakn link category menuju route post?category=.
+Lakukan pengecekan if pada form untuk memerikan request('category'),
+jika ada maka buat input hidden bernama category dengan value request('category').
+
+
+==================
+
+Filter author pakai arrow function
+
+    $query->when($filters['author'] ?? false, fn($query, $author) => 
+            $query->whereHas('author', fn($query) => 
+                $query->where('username', $author)
+            )
+        );
+
+========================
+
+PAGINATION
+
+Ini gila si ... HAHAHAHAHA
+
+cukup tambahin method pagination() terus masukin jumlah data perpage nya
+
+    "posts" => Post::latest()->filter(request(['search', 'category', 'author']))->paginate(4)->withQueryString()
+
+Untuk membawa request seperti search=data gunakan method withQueryString()
+
+Untuk menampilkan pagination di view cukup panggil method link dari data.
+
+    {{ $posts->links() }}
