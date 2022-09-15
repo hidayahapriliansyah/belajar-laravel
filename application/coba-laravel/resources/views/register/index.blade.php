@@ -9,7 +9,7 @@
         <h1 class="h3 mb-3 fw-normal text-center mb-5">Registration Form</h1>
   
         <div class="form-floating my-3">
-          <input type="text" class="form-control @error('name') is-invalid @enderror" id="floatingInput" placeholder="name@example.com" name="name" value="{{ old('name') }}">
+          <input type="text" class="form-control @error('name') is-invalid @enderror" id="floatingInput" placeholder="name@example.com" name="name" value="{{ old('name') }}" autofocus>
           <label for="floatingInput">Name</label>
           @error('name')
             <div id="validationServerUsernameFeedback" class="invalid-feedback">

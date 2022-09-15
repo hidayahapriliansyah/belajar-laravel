@@ -23,7 +23,7 @@
       <form action="/login" method="POST">
           @csrf
           <div class="form-floating my-3">
-            <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" placeholder="name@example.com" name="email">
+            <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" placeholder="name@example.com" name="email" autofocus>
             <label for="email">Email address</label>
             @error('email')
                 <div class="invalid-feedback">
