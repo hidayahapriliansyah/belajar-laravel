@@ -2,3 +2,6 @@ Pertanyaan :
 
 Apa itu what you see what you get?
 Kenapa pas nulis di model Category, pas di migration jadi categories?
+Install slugable nya kok gagal?
+    Ternyata harus ditulisin versi laravelnya pemirsa
+    composer require cviebrock/eloquent-sluggable "^8.0"

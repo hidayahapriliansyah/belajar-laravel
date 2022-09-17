@@ -5,6 +5,7 @@
     <h1 class="h2">My Post</h1>
   </div>
   <div class="col-lg-8">
+    <a href="/dashboard/posts/create" class="btn btn-primary mb-3"><span data-feather="plus"></span> Create New Post</a>
     <table class="table table-striped table-sm">
       <thead>
         <tr>
@@ -25,9 +26,9 @@
           </td>
           <td>{{ $post->category->name }}</td>
           <td>
-            <a href="/dashboard/posts/{{ $post->slug }}" class="badge bg-info"><span data-feather="eye"></span></a>
-            <a href="/dashboard/posts/{{ $post->slug }}" class="badge bg-warning"><span data-feather="edit"></span></a>
-            <a href="/dashboard/posts/{{ $post->slug }}" class="badge bg-danger"><span data-feather="x-circle"></span></a>
+            <a href="/dashboard/posts/{{ $post->slug }}" class="badge bg-info" title="Show post"><span data-feather="eye"></span></a>
+            <a href="/dashboard/posts/{{ $post->slug }}" class="badge bg-warning" title="Edit post"><span data-feather="edit"></span></a>
+            <a href="/dashboard/posts/{{ $post->slug }}" class="badge bg-danger" title="Delete post"><span data-feather="x-circle"></span></a>
           </td>
         </tr>
         @endforeach

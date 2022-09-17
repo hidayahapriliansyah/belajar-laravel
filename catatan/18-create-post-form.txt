@@ -1,0 +1,126 @@
+Di dalam route resouce, jika ada setelah route mengandung create maka akan diarahkan ke method create
+
+=========================
+
+MEMBUAT SLUG
+
+Eloquent sllugable
+Dokumentasi : https://github.com/cviebrock/eloquent-sluggable
+
+installnya gagal coy
+
+Bisa ketang. Harus ditulis versi laravelnya composer require cviebrock/eloquent-sluggable "^8.0"
+
+Untuk meenggunakan sluggable kita akan panggil trait dari sluggable di Model Post.
+
+    use Cviebrock\EloquentSluggable\Sluggable;
+
+    class Post extends Model
+    {
+        use Sluggable;
+
+        public function sluggable(): array
+        {
+            return [
+                'slug' => [
+                    'source' => 'title'
+                ]
+            ];
+        }
+    }
+======================
+alternatif dari youtube untuk membuat slug
+
+vStack
+vStack
+6 bulan yang lalu (diedit)
+Mungkin script ini bisa membuat slug secara otomatis dengan lebih simple
+
+<script>
+        const title = document.querySelector("#title");
+        const slug = document.querySelector("#slug");
+
+        title.addEventListener("keyup", function() {
+            let preslug = title.value;
+            preslug = preslug.replace(/ /g,"-");
+            slug.value = preslug.toLowerCase();
+        });
+</script>
+
+======================================
+
+FETCH API UNTUK MENGAMBIL DAN CEK SLUG
+
+Ini kita harus paham konsep promise sama fetch. Geus rada poho nya di? belajar lagi jug.
+
+  <script>
+    const title = document.getElementById('title');
+    const slug = document.getElementById('slug');
+
+    title.addEventListener('change', function() {
+      fetch('/dashboard/posts/checkSlug?title=' + title.value)
+        .then(response => response.json())
+        .then(data => slug.value = data.slug)
+    });
+  </script>
+
+ROUTE UNTUK FETCH SLUG
+
+    Route::get('/dashboard/posts/checkSlug', [DashboardPostController::class, 'checkSlug'])->middleware('auth');
+
+METHOD FETCH SLUG
+
+    public function checkSlug(Request $request)
+    {
+        $slug = SlugService::createSlug(Post::class, 'slug', $request->title);
+        return response()->json(["slug" => $slug]);
+    }
+
+==============================
+
+EDITOR : TRIX EDITOR WYSIWYG
+
+Dokumentasi : https://github.com/basecamp/trix
+
+Gimana cara makenya?
+
+Panggil css dan jsnya di head
+
+    <head>
+        …
+        <link rel="stylesheet" type="text/css" href="trix.css">
+        <script type="text/javascript" src="trix.js"></script>
+    </head>
+
+Lalu masukkan elemen trix ke dalam form
+
+    <form …>
+        <input id="x" type="hidden" name="content"> //
+        <trix-editor input="x"></trix-editor> // attribut input satu pasang dengan id element input di atasnya. Contoh body.
+    </form>
+
+MENONAKTIFKAN TOOLS UPLOAD FILE
+
+1. Kita beri style di halamannnya (head)...
+
+    <style>
+      trix-toolbar [data-trix-button-group="file-tools"] {
+        display: none;
+      };
+    </style>
+
+2. Kita nonaktifkan fungsinya dengan javascripts
+
+    <script>
+        ...
+
+        document.addEventListener('trix-file-accept', function(e) {
+        e.prventDefault;
+        });
+    </script>
+
+==============
+
+MENANGKAP DATA DARI CREATE
+
+Di dalam route resouce, jika method route post maka akan otomatis dikelola oleh store
