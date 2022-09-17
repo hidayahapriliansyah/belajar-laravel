@@ -1,0 +1,139 @@
+MENGHAPUS POST
+
+Untuk menghapus kita akan menggunakan form lagi dengan fitur csrf.
+Kita akan membutuhkan method delete. Tapi karena post hanya memiliki 2 method yaitu GET dan POST,
+maka kita lakukan html method spoofing denga directive blade @method('delete')
+
+    <form action="/dashboard/posts" method="POST" class="d-inline">
+      @method('delete')
+      @csrf
+      <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')"><span data-feather="x-circle"></span></button>
+    </form>
+
+Kita akan mengirimkan $post->slug melalui form
+
+    <form action="/dashboard/posts/{{$post->slug}}" method="POST" class="d-inline">
+      ...
+    </form>
+
+Route ini akan mengarah ke method destroy
+
+    public function destroy(Post $post)
+    {
+        //berbanding terbaling dengan create, sekarang kita panggil method destroy dari model post, dengan parameter post->id
+        Post::destroy($post->id);
+        
+        //lalu kita arahkan ke index dan berikan flash message
+        return redirect('/dashboard/posts')->with('success', 'Post has been deleted!');
+    }
+
+====================
+
+MENU EDIT
+
+arahkan anchor ke /dashboard/posts/{{ $post->slug }}/edit
+
+    <a href="/dashboard/posts/{{ $post->slug }}/edit" class="badge bg-warning text-decoration-none"><span data-feather="edit"></span> Edit</a>
+
+Untuk melihar route list resource bisa cek directive
+
+    php artisan route:list
+
+==============
+
+FORM EDIT
+
+Kita akan arahkna actionnya ke /dashboard/post/{{ $post->slug }} denga method put
+
+    <form method="POST" action="/dashboard/posts/{{ $post->slug }}">
+      @method('put')
+      ...
+    </form>
+
+Lalu untuk value dari setiap input agar data dari post yang akan diedit bisa ditampilkan,
+maka gunakan old dengan cara seperti ini :
+
+    value="{{ old('slug', $post->slug) }}"
+
+==============
+
+Validasi ulang slug
+
+akan terjadi error jika kita mengirim slug yang sama,
+karena slug kita buat unique sehingga ketika akan update yang mana
+kita mengirim data baru dicocokan dengan data post->slug maka jika
+slug yang baru sama dengan slug sebelumnya maka akan terdeteksi tidak unique.
+
+Oleh karena itu kita lakukan validate data pengondisian jika
+slug dari request tidak sama denga slug dari post maka validasi.
+
+    $rules = [
+        'title' => 'required|max:255',
+        'category_id' => 'required',
+        'body' => 'required'
+    ];
+
+    if($request->slug != $post->slug) {
+        $rules['slug'] = 'required|unique:posts';
+    }
+
+    $validatedData = $request->validate($rules);
+
+=====
+
+UPDATE ORM
+
+Dokumentasi : https://laravel.com/docs/8.x/eloquent#updates
+
+Ini hampir sama seperti kita melakukan create. Yang berbeda adalah kita
+akan menggunakan method update
+
+    $validatedData['user_id'] = auth()->user()->id;
+    
+    $validatedData['excerpt'] = Str::limit(strip_tags($request->body), 200);
+
+    Post::where('id', $post->id)
+        ->update($validatedData);
+
+    return redirect('/dashboard/posts')->with('success', 'Post has been updated!');
+
+======================================
+
+ISI METHOD UPDATE
+
+    public function update(Request $request, Post $post)
+    {
+        $rules = [
+            'title' => 'required|max:255',
+            'category_id' => 'required',
+            'body' => 'required'
+        ];
+
+        if($request->slug != $post->slug) {
+            $rules['slug'] = 'required|unique:posts';
+        }
+
+        $validatedData = $request->validate($rules);
+
+        $validatedData['user_id'] = auth()->user()->id;
+        $validatedData['excerpt'] = Str::limit(strip_tags($request->body), 200);
+
+        Post::where('id', $post->id)
+            ->update($validatedData);
+
+        return redirect('/dashboard/posts')->with('success', 'Post has been updated!');
+    }  
+
+
+==============
+
+Tambahan dari Pak Dhika :
+
+UPDATE:
+
+Tambahkan script berikut ini ini pada method edit dan show di DashboardPostController, sebelum return nya, agar kita tidak bisa melihat dan mengubah post buatan author lain :
+
+if($post->author->id !== auth()->user()->id) {
+     abort(403);
+}
+
