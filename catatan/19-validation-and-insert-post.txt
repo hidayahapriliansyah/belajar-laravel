@@ -1,0 +1,62 @@
+Buat validasi data di method store
+
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'title' => 'required|max:255',
+            'slug' => 'required|unique:posts',
+            'category_id' => 'required',
+            'body' => 'required'
+        ]);
+
+        $validatedData['user_id'] = auth()->user()->id;
+        $validatedData['excerpt'] = Str::limit(strip_tags($request->body), 200);
+    }
+
+MEMBUAT EXCERPT
+
+Dokumentasi : https://laravel.com/docs/8.x/helpers#method-str-limit
+
+    use Illuminate\Support\Str;
+    
+    $truncated = Str::limit('The quick brown fox jumps over the lazy dog', 20, ' (...)');
+
+Kita gunakan di method store kita
+
+    
+        $validatedData['excerpt'] = Str::limit(strip_tags($request->body), 200);
+
+        strip_tags adalah fungsi php untuk mengahapus element tag dari string
+
+=================
+
+MEMASUKKAN DATA DAN REDIRECT halamannnya
+
+
+    Post::create($validatedData);
+    
+    return redirect('/dashboard/posts')->with('success', 'New post has been added!');
+
+FLASH MESSAGE DI HALAMAN INDEX
+
+
+    @if (session()->has('success'))
+      <div class="alert alert-success" role="alert">
+        {{ session('success') }}
+      </div>
+    @endif
+
+================
+
+
+Membuat nilai old category 
+
+    <select class="form-select" id="category" name="category_id">
+      @foreach ($categories as $category)
+        @if (old('category_id') == $category->id)
+          <option value="{{ $category->id }}" selected>{{ $category->name }}</option>
+        @else
+          <option value="{{ $category->id }}">{{ $category->name }}</option>
+        @endif
+      @endforeach
+    </select>

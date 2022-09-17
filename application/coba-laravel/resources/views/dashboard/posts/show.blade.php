@@ -12,7 +12,6 @@
         <img src="/img/{{ $post->category->slug }}-hero.jpg" class="card-img-top my-3" alt="{{ $post->category->slug }}">
         <small>Post in <a href="/blog?category={{ $post->category->slug }}" class="text-decoration-none">{{ $post->category->name }}</a> {{ $post->created_at->diffForHumans() }}</small>
         <p>{!! $post->body !!}</p>
-        <p><a href="/blog" class="text-decoration-none">Back to posts</a></p>
       </article>
     </div>
   </div>
