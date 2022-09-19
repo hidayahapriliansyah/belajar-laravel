@@ -1,0 +1,50 @@
+MENGUBAH FORM.
+
+Agar dapat mengelola file, tambahkan attribut enctype="multipart/form-data"
+
+    <form method="POST" action="/dashboard/posts" enctype="multipart/form-data">
+
+================
+
+CARA KERJA PROSES UPLOAD
+
+FIle ini akan ditangani oleh file di request...
+Coba deh cek pake ddd($request) di method store.
+
+Cek hasil uploadan juga di method store 
+
+    return $request->file('image')->store('post-images');
+
+    fungsi store mengembalikan path gambar ya ges ya ...
+
+    Untuk mengecek bahwa file sudah diupload bisa cek ke folder 
+    storage/app/post-images/nama-gambar-kita
+
+======================
+
+KONFIGURASI FILE STORAGE
+
+Dokumentasi : https://laravel.com/docs/8.x/filesystem#main-content
+
+
+Untuk menghubungkan public di storage dengan folder public yang bisa diakses.
+
+    php artisan storage:link
+
+
+==============
+
+MEMBUAT FIELD IMAGE DI POST
+
+ini mah karena kita gak punya column buat nyimpen data gambarnya.
+
+    
+    $table->string('image')->nullable();
+
+======================
+
+VALIDASI IMAGE
+
+Tambahkan validasi di method store $validatedData
+
+    'image' => 'image|file|max:1024',
