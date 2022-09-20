@@ -1,0 +1,127 @@
+PREVIEW IMAGE
+
+Menambahkan fitur preview image. 
+Buat tag image kosong, lalu saat input image diisi kita jalankan 
+function previewImage() yang menambahkan
+src image pada tage img kosong itu.
+
+  <div class="mb-3">
+    <label for="image" class="form-label">Post image </label>
+    <img class="img-preview img-fluid col-sm-5 mb-3">
+    <input class="form-control @error('image') is-invalid @enderror" onchange="previewImage()" type="file" id="image" name="image">
+    @error('image')
+        <div class="invalid-feedback">
+          <p>{{ $message }}</p>
+        </div>
+    @enderror
+  </div>
+
+Lalu kita tambahkan kode java script berikut
+
+    function previewImage() {
+      const image = document.querySelector('#image');
+      const imagePreview = document.querySelector('.img-preview');
+
+      imagePreview.style.display = 'block';
+
+      const oFReader = new FileReader();
+      oFReader.readAsDataURL(image.files[0]);
+
+      oFReader.onload = function(oFREvent) {
+        imagePreview.src = oFREvent.target.result;
+      }
+    }
+
+=====================
+
+MENGHAPUS BERKAS GAMBAR YANG SUDAH DIGANTI/DIHAPUS
+
+Pada saat edit kita akan menambahkan input bertipe hidden dan nama OldImage
+dengan value nama image lama, yang bertujuan untuk pengecekan pada saat update jika ada gambar yang diupload
+dan jika OldImage ada maka oldImage akan dihapus. 
+
+    INputnya seperti ini : <input type="hidden" value="{{ $post->image }}" name="oldImage">
+
+    if($request->file('image')) {
+            if($request->oldImage) {
+                Storage::delete($request->oldImage);
+            }
+
+            $validatedData['image'] = $request->file('image')->store('post-image');
+    }
+
+    Kita menggunakan library storage untuk menghapus image di storage.
+    Dokumentasi : https://laravel.com/docs/8.x/filesystem#main-content
+
+Pada saat delete kita juga akan menghapus image juga. 
+kita lakukan pengecekan berdasarkan post, jika post mengandung image,
+maka imagenya akan kita hapus terlebih dahulu sebelum menghapus data di table post.
+
+    Di method destroy :
+
+    if($post->image) {
+            Storage::delete($post->image);
+        }
+
+===============================
+
+Detail dari method update :
+
+  public function update(Request $request, Post $post)
+    {
+        $rules = [
+            'title' => 'required|max:255',
+            'category_id' => 'required',
+            'image' => 'image|file|max:1024',
+            'body' => 'required'
+        ];
+
+        if($request->slug != $post->slug) {
+            $rules['slug'] = 'required|unique:posts';
+        }
+
+        $validatedData = $request->validate($rules);
+
+        if($request->file('image')) {
+            if($request->oldImage) {
+                Storage::delete($request->oldImage);
+            }
+
+            $validatedData['image'] = $request->file('image')->store('post-image');
+        }
+
+        $validatedData['user_id'] = auth()->user()->id;
+        $validatedData['excerpt'] = Str::limit(strip_tags($request->body), 200);
+
+        Post::where('id', $post->id)
+            ->update($validatedData);
+
+        return redirect('/dashboard/posts')->with('success', 'Post has been updated!');
+    } 
+
+===========
+
+Detail dari method destroy :
+
+    public function destroy(Post $post)
+    {
+        if($post->image) {
+            Storage::delete($post->image);
+        }
+        
+        Post::destroy($post->id);
+        
+        return redirect('/dashboard/posts')->with('success', 'Post has been deleted!');
+    }
+
+=========================
+
+Tambahan dari komentar youtube tentang preview image biar lebih simple
+
+
+Ardhi Putra
+10 bulan yang lalu (diedit)
+untuk image preview nya bisa dibuat lebih simple pak, tinggal seperti ini aja
+
+const blob = URL.createObjectURL(image.files[0]);
+imgPreview.src = blob;

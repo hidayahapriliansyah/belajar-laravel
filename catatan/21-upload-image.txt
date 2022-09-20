@@ -20,6 +20,10 @@ Cek hasil uploadan juga di method store
     Untuk mengecek bahwa file sudah diupload bisa cek ke folder 
     storage/app/post-images/nama-gambar-kita
 
+Selain menyimpan gambar ke storage, store juga langsung mengembalikan nilai string
+nama dari gambar yang mana ini jadi jawaban atas kebingungan Anda Adiiii ..
+Kok bisa ya? nama file di table image darimana isinya dong. ya dari itu ...
+
 ======================
 
 KONFIGURASI FILE STORAGE
