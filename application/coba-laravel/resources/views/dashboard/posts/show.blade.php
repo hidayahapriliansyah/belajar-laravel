@@ -13,7 +13,11 @@
           @csrf
           <button class="badge bg-danger border-0" onclick="return confirm('Are you sure?')"><span data-feather="x-circle"></span>  Delete</button>
         </form>
+        @if ($post->image)
+        <img src="{{ asset('storage/' . $post->image) }}" class="card-img-top my-3" alt="{{ $post->category->slug }}">
+        @else    
         <img src="/img/{{ $post->category->slug }}-hero.jpg" class="card-img-top my-3" alt="{{ $post->category->slug }}">
+        @endif
         <small>Post in <a href="/blog?category={{ $post->category->slug }}" class="text-decoration-none">{{ $post->category->name }}</a> {{ $post->created_at->diffForHumans() }}</small>
         <p>{!! $post->body !!}</p>
       </article>

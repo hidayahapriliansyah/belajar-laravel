@@ -48,3 +48,51 @@ VALIDASI IMAGE
 Tambahkan validasi di method store $validatedData
 
     'image' => 'image|file|max:1024',
+
+===============
+
+MENAMABHKAN IMAGE KE STORAGE 
+
+Karena kita menginginkan user tidak wajib mengaplod gambar
+maka kita akan melakukan if lalu upload gambar 
+
+Di dalam method store
+
+    if($request->file('image')) {
+            $validatedData['image'] = $request->file('image')->store('post-image');
+        }
+
+=====================
+
+CARA MENGAKSES GAMBAR
+
+Pada src image kita akan akses menggunakan directive blade
+{{ asset('storage'/ . $nama-gambar) }}
+
+        <img src="{{ asset('storage/' . $post->image) }}" class="card-img-top my-3" alt="{{ $post->category->slug }}">
+
+===================
+
+ISI METHOD STORE
+
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'title' => 'required|max:255',
+            'slug' => 'required|unique:posts',
+            'image' => 'image|file|max:1024',
+            'category_id' => 'required',
+            'body' => 'required'
+        ]);
+
+        if($request->file('image')) {
+            $validatedData['image'] = $request->file('image')->store('post-image');
+        }
+
+        $validatedData['user_id'] = auth()->user()->id;
+        $validatedData['excerpt'] = Str::limit(strip_tags($request->body), 200);
+
+        Post::create($validatedData);
+
+        return redirect('/dashboard/posts')->with('success', 'New post has been added!');
+    }
