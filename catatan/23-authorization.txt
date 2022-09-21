@@ -1,0 +1,167 @@
+Dokumentasi : https://laravel.com/docs/8.x/authorization#main-content
+
+MEMBUAT CONTROLLER AdminCategoryController
+
+Controller ini merupakan controller resource yang terhubung dengan model Category
+
+======================================
+
+MEMBUAT ROUTE AdminCategoryController
+
+Kita akan menghapus route ke show. Kita gunakan except untuk melakukannya.
+Untuk sementara kita akan menggunakan middleware auth.
+
+    Route::resource('/dashboard/categories', AdminCategoryController::class)->except('show')->middleware('auth');
+
+============================
+
+PENGECEKAN MANUAL ADMIN DENGAN AUTH
+
+Cara pertama 
+
+    if(auth()->guest()) {
+        abort(403);
+    }
+
+    if(auth()->user()->username !== 'aprilapril') {
+        abort(403);
+    }
+
+Cara kedua 
+
+    if(auth()->guest() || auth()->user()->username !== 'aprilapril') {
+        abort(403);
+    }
+
+Cara ketiga
+
+    if(!auth()->check() || auth()->user()->username !== 'aprilapril') {
+        abort(403);
+    }
+
+===============================
+
+MEMBUAT MIDDLEWARE CUSTOM
+
+Kita gunakan command valet artisan make middleware dengan nama IsAdmin.
+Setelah itu kita masukkan pengecekan manual yang sudah kita buat sebelumnya
+ke dalam nya.
+
+Di dalam middleware IsAdmin :
+
+    public function handle(Request $request, Closure $next)
+    {
+        if(!auth()->check() || auth()->user()->username !== 'aprilapril') {
+            abort(403);
+        }
+
+        return $next($request);
+    }
+
+MENDAFTARKAN MIDDLEWARE
+
+Setelah membuat middleware kita sendiri. Kita akan mendaftarkan middleware itu supaya bisa digunakan.
+Kita daftarkan di App\Http\Kernel.php . Di dalamnya terdapat properti routeMidleware, kita akan 
+mendaftarkan middleware kita di sana!
+
+    Kita kasih key admin, dengan value path middleware nya.
+
+    protected $routeMiddleware = [
+        'auth' => \App\Http\Middleware\Authenticate::class,
+        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+        'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
+        'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
+        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'admin' => \App\Http\Middleware\IsAdmin::class
+    ];
+
+Setelah itu kita bisa menggunakan middleware itu sebagaimana menggunakan middleware auth.
+
+    Route::resource('/dashboard/categories', AdminCategoryController::class)->except('show')->middleware('admin');
+
+===============================================
+
+MEMBUAT GATE
+
+Gate merupakan salah satu bentuk lain dari authorization yang lebih fleksible. 
+Middleware biasanya digunakan pada pengecekan route, namun tidak bisa digunakan
+pada blade.
+
+Cara membuat Gate. Kita buat di app\Providers\AppServiceProvider.php
+Di dalamnya terdapat method boot tempat kita mengganti default template bootstrap kita.
+
+Kita sebelumnya harus memanggil namespace dari Gate, dan model yang akan kita gunakan.
+
+    use Illuminate\Support\Facades\Gate;
+    use App\Models\User;
+
+    Di dalam boot kita tambahkan 
+
+        Gate::define('admin', function(User $user) {
+            return $user->username === 'aprilapril';
+        });
+
+Gate ini bisa diakses di AdminCategoryController seperti ini :
+
+    public function index()
+    {
+        $this->authorize('admin');
+        
+        return view('dashboard.categories.index', [
+            "categories" => Category::all()
+        ]);
+    }
+
+    //pake this->authorize('admin')
+
+Setelah membuat gate, kita bisa menerapkannya di blade untuk 
+hanya menampilkan form administrator pada user yang merupakan admin
+dengan cara :
+
+    @can('admin')
+      element ...
+    @endcan
+
+===============================
+
+MENAMBAHKAN COLUM ADMIN PADA TABLE USER
+
+Kita buat menggunakan artisan di command valet
+
+    add_is_admin_to_users_table
+
+    ini tidak akan membuat table baru,
+    akan memodifikasi table users.
+
+Di dalam method up kita buat :
+
+    Schema::table('users', function (Blueprint $table) {
+        $table->boolean('is_admin')->default(false);
+    });
+
+Di dalam method down kita buat :
+
+    Schema::table('users', function (Blueprint $table) {
+        $table->dropColumn('is_admin');
+    });
+
+Kita eksekusi php artisan migrate
+
+Kalau udah kayak gitu sekarang kita ganti gate sama middlewarenya.
+Kita arahin ke $user->is_admin
+
+Gate : 
+
+    Gate::define('admin', function(User $user) {
+            return $user->is_admin;
+        });
+
+Middleware :
+
+    if(!auth()->check() || !auth()->user()->IsAdmin) {
+            abort(403);
+        }
